@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+from botocore.exceptions import ClientError
+
+from chalice_helpers import encrypt
+from commandlines import Command
+from ansi.colour import fg
+
+c = Command()
+
+if c.arg0 is None or c.arg0 == "":
+    print(fg.boldred('You must provide a KMS Key ID.'))
+    exit(-1)
+
+if c.arg1 is None or c.arg1 == "":
+    print(fg.boldred('You must provide a string to encrypt.'))
+    exit(-1)
+
+try:
+    encrypted = encrypt(c.arg0, c.arg1)
+except ClientError as client_error:
+    print(fg.boldred(client_error.response['Error']['Message']))
+    exit(-1)
+
+print(encrypted)
+
